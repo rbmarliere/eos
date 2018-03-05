@@ -74,6 +74,7 @@ if [ $ARCH == "funtoo" ]; then
     BOOST_ROOT=${HOME}/opt/boost_1_65_0
     BOOST_ROOT_FLAG="-DBOOST_ROOT=${BOOST_ROOT}"
     BINARYEN_BIN=${HOME}/opt/binaryen/bin
+    LLVM_DIR_FLAG="-DLLVM_DIR=/usr/lib64/llvm/4/lib64/cmake/llvm"
     WASM_LLVM_CONFIG=${HOME}/opt/wasm/bin/llvm-config
     Secp256k1_ROOT_DIR="-DSecp256k1_ROOT_DIR=${HOME}/opt/secp256k1-zkp"
 fi
