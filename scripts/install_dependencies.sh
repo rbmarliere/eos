@@ -106,48 +106,53 @@ fi
 
 if [ $ARCH == "funtoo" ]; then
     # install boost
-    cd ${TEMP_DIR}
-    export BOOST_ROOT=${HOME}/opt/boost_1_64_0
-    curl -L https://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.bz2 > boost_1.64.0.tar.bz2
-    tar xvf boost_1.64.0.tar.bz2
-    cd boost_1_64_0/
-    ./bootstrap.sh "--prefix=$BOOST_ROOT"
-    ./b2 install
-    rm -rf ${TEMP_DIR}/boost_1_64_0/
+    if [ ! -d ${HOME}/opt/boost_1_65_0 ]; then
+        cd ${TEMP_DIR}
+        curl -L https://sourceforge.net/projects/boost/files/boost/1.65.0/boost_1_65_0.tar.bz2 > boost_1.65.0.tar.bz2
+        tar xvf boost_1.65.0.tar.bz2
+        cd boost_1_65_0/
+        ./bootstrap.sh "--prefix=$BOOST_ROOT"
+        ./b2 -j$(nproc) install
+        rm -rf ${TEMP_DIR}/boost_1_65_0/
+    fi
 
     # install secp256k1-zkp (Cryptonomex branch)
-    cd ${TEMP_DIR}
-    git clone https://github.com/cryptonomex/secp256k1-zkp.git
-    cd secp256k1-zkp
-    ./autogen.sh
-    ./configure --prefix=${HOME}/opt/secp256k1-zkp
-    make
-    sudo make install
-    rm -rf cd ${TEMP_DIR}/secp256k1-zkp
+    if [ ! -d ${HOME}/opt/secp256k1-zkp ]; then
+        cd ${TEMP_DIR}
+        git clone https://github.com/cryptonomex/secp256k1-zkp.git
+        cd secp256k1-zkp
+        ./autogen.sh
+        ./configure --prefix=${HOME}/opt/secp256k1-zkp
+        make
+        sudo make install
+        rm -rf cd ${TEMP_DIR}/secp256k1-zkp
+    fi
 
     # install binaryen
-    cd ${TEMP_DIR}
-    git clone https://github.com/WebAssembly/binaryen
-    cd binaryen
-    git checkout tags/1.37.14
-    cmake . && make
-    mkdir -p ${HOME}/opt/binaryen/
-    mv ${TEMP_DIR}/binaryen/bin ${HOME}/opt/binaryen/
-    rm -rf ${TEMP_DIR}/binaryen
-    BINARYEN_BIN=${HOME}/opt/binaryen/bin
+    if [ ! -d ${HOME}/opt/binaryen ]; then
+        cd ${TEMP_DIR}
+        git clone https://github.com/WebAssembly/binaryen
+        cd binaryen
+        git checkout tags/1.37.14
+        cmake . && make
+        mkdir -p ${HOME}/opt/binaryen/
+        mv ${TEMP_DIR}/binaryen/bin ${HOME}/opt/binaryen/
+        rm -rf ${TEMP_DIR}/binaryen
+    fi
 
     # build llvm with wasm build target:
-    cd ${TEMP_DIR}
-    mkdir wasm-compiler
-    cd wasm-compiler
-    git clone --depth 1 --single-branch --branch release_40 https://github.com/llvm-mirror/llvm.git
-    cd llvm/tools
-    git clone --depth 1 --single-branch --branch release_40 https://github.com/llvm-mirror/clang.git
-    cd ..
-    mkdir build
-    cd build
-    cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=${HOME}/opt/wasm -DLLVM_TARGETS_TO_BUILD= -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly -DCMAKE_BUILD_TYPE=Release ../
-    make -j4 install
-    rm -rf ${TEMP_DIR}/wasm-compiler
-    WASM_LLVM_CONFIG=${HOME}/opt/wasm/bin/llvm-config
+    if [ ! -d ${HOME}/opt/wasm ]; then
+        cd ${TEMP_DIR}
+        mkdir wasm-compiler
+        cd wasm-compiler
+        git clone --depth 1 --single-branch --branch release_40 https://github.com/llvm-mirror/llvm.git
+        cd llvm/tools
+        git clone --depth 1 --single-branch --branch release_40 https://github.com/llvm-mirror/clang.git
+        cd ..
+        mkdir build
+        cd build
+        cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=${HOME}/opt/wasm -DLLVM_TARGETS_TO_BUILD= -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly -DCMAKE_BUILD_TYPE=Release ../
+        make -j$(nproc) install
+        rm -rf ${TEMP_DIR}/wasm-compiler
+    fi
 fi

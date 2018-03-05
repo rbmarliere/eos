@@ -15,7 +15,7 @@ TEMP_DIR=/tmp
 
 # Target architectures
 ARCH=$1
-TARGET_ARCHS="ubuntu darwin"
+TARGET_ARCHS="ubuntu darwin funtoo"
 
 # Check ARCH
 if [[ $# > 2 ]]; then
@@ -70,7 +70,7 @@ if [ $ARCH == "darwin" ]; then
 fi
 
 if [ $ARCH == "funtoo" ]; then
-    BOOST_ROOT=${HOME}/opt/boost_1_64_0
+    BOOST_ROOT=${HOME}/opt/boost_1_65_0
     BINARYEN_BIN=${HOME}/opt/binaryen/bin
     WASM_LLVM_CONFIG=${HOME}/opt/wasm/bin/llvm-config
     Secp256k1_ROOT_DIR="-DSecp256k1_ROOT_DIR=${HOME}/opt/secp256k1-zkp"
