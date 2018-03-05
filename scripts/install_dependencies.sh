@@ -112,7 +112,7 @@ if [ $ARCH == "funtoo" ]; then
         tar xvf boost_1.65.0.tar.bz2
         cd boost_1_65_0/
         ./bootstrap.sh "--prefix=$BOOST_ROOT"
-        ./b2 -j$(nproc) install
+        ./b2 -j$(nproc) --ignore-site-config install
         rm -rf ${TEMP_DIR}/boost_1_65_0/
     fi
 
