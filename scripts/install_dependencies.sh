@@ -105,6 +105,8 @@ if [ $ARCH == "darwin" ]; then
 fi
 
 if [ $ARCH == "funtoo" ]; then
+    mkdir -p ${HOME}/opt
+
     # install boost
     if [ ! -d ${HOME}/opt/boost_1_65_0 ]; then
         cd ${TEMP_DIR}
@@ -124,7 +126,7 @@ if [ $ARCH == "funtoo" ]; then
         ./autogen.sh
         ./configure --prefix=${HOME}/opt/secp256k1-zkp
         make
-        sudo make install
+        make install
         rm -rf cd ${TEMP_DIR}/secp256k1-zkp
     fi
 
